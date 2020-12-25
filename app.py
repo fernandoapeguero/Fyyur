@@ -479,6 +479,8 @@ def edit_venue(venue_id):
   #   "image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60"
   # }
   # TODO: populate form with values from venue with ID <venue_id>
+
+  print(form)
   venue = Venue.query.filter_by(id=venue_id).first()
 
   return render_template('forms/edit_venue.html', form=form, venue=venue)
