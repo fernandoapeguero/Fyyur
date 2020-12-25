@@ -124,8 +124,7 @@ class VenueForm(Form):
             (True, 'Yes'),
             (False, 'No')
         ],
-            validators=[InputRequired()],
-            coerce=lambda x: x == 'True'
+            validators=[InputRequired()]
     )
 
     talent_description = TextAreaField(
@@ -232,12 +231,13 @@ class ArtistForm(Form):
         'facebook_link', validators=[URL()]
     )
     seeking_venue = SelectField(
+        'seeking_venue',
         choices=[
             (True, 'Yes'),
             (False, 'No')
         ],
             validators=[InputRequired()],
-            coerce=lambda x: x == 'True'
+            coerce=lambda x: x == 'True',
     )
 
     venue_description = TextAreaField(

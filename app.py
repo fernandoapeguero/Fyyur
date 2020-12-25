@@ -59,6 +59,7 @@ class Artist(db.Model):
     state = db.Column(db.String(120))
     phone = db.Column(db.String(120))
     genres = db.Column(db.ARRAY(db.String()))
+    website = db.Column(db.String(500))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
     seeking_venue = db.Column(db.Boolean() , nullable=False , default=False)
@@ -504,6 +505,13 @@ def create_artist_submission():
   # TODO: modify data to be the data object returned from db insertion
 
   data = request.form
+  is_seeking = False
+
+  if(data['seeking_venue'] != 'True'):
+        is_seeking = False
+  else: 
+    is_seeking = True
+
   try:
 
     artist = Artist(name=data['name'], 
@@ -511,9 +519,10 @@ def create_artist_submission():
                     state=data['state'],
                     phone=data['phone'],
                     genres=data.getlist('genres'),
+                    website=data['website'],
                     image_link=data['image_link'],
                     facebook_link=data['facebook_link'],
-                    seeking_venue=bool(data['seeking_venue']),
+                    seeking_venue= is_seeking,
                     seeking_venue_description=data['venue_description'])
 
     db.session.add(artist)
