@@ -8,6 +8,7 @@ from typing import final
 import dateutil.parser
 import babel
 from flask import Flask, render_template, request, Response, flash, redirect, url_for
+import flask
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 import logging
@@ -26,7 +27,7 @@ app.config.from_object('config')
 db = SQLAlchemy(app)
 
 # TODO: connect to a local postgresql database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2225@localhost:5432/fyyurs'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2225@localhost:5432/fyyur'
 
 migrate = Migrate(app , db)
 #----------------------------------------------------------------------------#
@@ -289,16 +290,6 @@ def delete_venue(venue_id):
 @app.route('/artists')
 def artists():
   # TODO: replace with real data returned from querying the database
-  # data=[{
-  #   "id": 4,
-  #   "name": "Guns N Petals",
-  # }, {
-  #   "id": 5,
-  #   "name": "Matt Quevedo",
-  # }, {
-  #   "id": 6,
-  #   "name": "The Wild Sax Band",
-  # }]
 
   artists = Artist.query.all()
   return render_template('pages/artists.html', artists=artists)
@@ -386,7 +377,6 @@ def show_artist(artist_id):
 @app.route('/artists/<int:artist_id>/edit', methods=['GET'])
 def edit_artist(artist_id):
   form = ArtistForm()
-  
   # TODO: populate form with fields from artist with ID <artist_id>
   artist = Artist.query.filter_by(id=artist_id).first()
 
@@ -396,27 +386,37 @@ def edit_artist(artist_id):
 def edit_artist_submission(artist_id):
   # TODO: take values from the form submitted, and update existing
   # artist record with ID <artist_id> using the new attributes
+  try:
+    data = request.form
+    print(data)
+    artist = Artist.query.filter_by(id=artist_id).first()
+    artist.image_link = data['image_link']
+    artist.name = data['name']
+    artist.city = data['city']
+    artist.state = data ['state']
+    artist.phone = data['phone']
+    artist.genres = data.getlist('genres')
+    artist.facebook_link = data['facebook_link']
+
+
+    db.session.commit()
+    flash("Artist Information Updated")
+  except: 
+    db.rollback()
+    flash("Artist Information could not be updated")
+  finally:
+    db.session.close()
+  
+
 
   return redirect(url_for('show_artist', artist_id=artist_id))
 
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
   form = VenueForm()
-  # venue={
-  #   "id": 1,
-  #   "name": "The Musical Hop",
-  #   "genres": ["Jazz", "Reggae", "Swing", "Classical", "Folk"],
-  #   "address": "1015 Folsom Street",
-  #   "city": "San Francisco",
-  #   "state": "CA",
-  #   "phone": "123-123-1234",
-  #   "website": "https://www.themusicalhop.com",
-  #   "facebook_link": "https://www.facebook.com/TheMusicalHop",
-  #   "seeking_talent": True,
-  #   "seeking_description": "We are on the lookout for a local artist to play every two weeks. Please call us.",
-  #   "image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60"
-  # }
   # TODO: populate form with values from venue with ID <venue_id>
+
+  venue = Venue.query.filter_by(id=venue_id).first()
 
   print(form)
   venue = Venue.query.filter_by(id=venue_id).first()
@@ -427,6 +427,30 @@ def edit_venue(venue_id):
 def edit_venue_submission(venue_id):
   # TODO: take values from the form submitted, and update existing
   # venue record with ID <venue_id> using the new attributes
+  try:
+    data = request.form
+    print(data)
+    venue = Venue.query.filter_by(id=venue_id).first()
+    venue.image_link = data['image_link']
+    venue.name = data['name']
+    venue.city = data['city']
+    venue.state = data['state']
+    venue.address = data['address']
+    venue.phone = data['phone']
+    venue.genres = data.getlist('genres')
+    venue.facebook_link = data['facebook_link']
+    venue.seeking_talent = bool(data['seeking_talent'])
+    venue.seeking_talent_description = data['talent_description']
+    venue.website = data['website']
+
+    db.session.commit()
+    flash('updated Success')
+  except:
+    db.session.rollback()
+    flash('The venue could not be updated')
+  finally:
+    db.session.close()
+
   return redirect(url_for('show_venue', venue_id=venue_id))
 
 #  Create Artist
@@ -488,43 +512,11 @@ def shows():
   # displays list of shows at /shows
   # TODO: replace with real venues data.
   #       num_shows should be aggregated based on number of upcoming shows per venue.
-  data=[{
-    "venue_id": 1,
-    "venue_name": "The Musical Hop",
-    "artist_id": 4,
-    "artist_name": "Guns N Petals",
-    "artist_image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80",
-    "start_time": "2019-05-21T21:30:00.000Z"
-  }, {
-    "venue_id": 3,
-    "venue_name": "Park Square Live Music & Coffee",
-    "artist_id": 5,
-    "artist_name": "Matt Quevedo",
-    "artist_image_link": "https://images.unsplash.com/photo-1495223153807-b916f75de8c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
-    "start_time": "2019-06-15T23:00:00.000Z"
-  }, {
-    "venue_id": 3,
-    "venue_name": "Park Square Live Music & Coffee",
-    "artist_id": 6,
-    "artist_name": "The Wild Sax Band",
-    "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
-    "start_time": "2035-04-01T20:00:00.000Z"
-  }, {
-    "venue_id": 3,
-    "venue_name": "Park Square Live Music & Coffee",
-    "artist_id": 6,
-    "artist_name": "The Wild Sax Band",
-    "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
-    "start_time": "2035-04-08T20:00:00.000Z"
-  }, {
-    "venue_id": 3,
-    "venue_name": "Park Square Live Music & Coffee",
-    "artist_id": 6,
-    "artist_name": "The Wild Sax Band",
-    "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
-    "start_time": "2035-04-15T20:00:00.000Z"
-  }]
-  shows = Show.query.join(Venue , Venue.id == Show.venue_id).join(Artist , Artist.id == Show.artist_id).all()
+
+
+  now = datetime.utcnow()
+
+  shows = Show.query.join(Venue , Venue.id == Show.venue_id).join(Artist , Artist.id == Show.artist_id).filter(Show.start_time > now).all()
   # shows = Show.query.join(Venue, Show.venue_id == Venue.id).join(Artist, Artist.id == Show.artist_id).all()
   result = []
   for show in shows:

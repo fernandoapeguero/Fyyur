@@ -120,6 +120,7 @@ class VenueForm(Form):
     )
     website = StringField( 'website', validators=[DataRequired(), URL()] )
     seeking_talent = SelectField(
+        'seeking_talent',
         choices=[
             (True, 'Yes'),
             (False, 'No')
@@ -128,7 +129,7 @@ class VenueForm(Form):
     )
 
     talent_description = TextAreaField(
-        'seeking_talent_description', validators=[DataRequired()]
+        'talent_description', validators=[DataRequired()]
     )
 
 class ArtistForm(Form):

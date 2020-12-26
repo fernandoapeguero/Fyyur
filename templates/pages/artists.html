@@ -3,13 +3,23 @@
 {% block content %}
 <ul class="items">
 	{% for artist in artists %}
-	<li>
+	<li style="display: flex; justify-content: space-between">
 		<a href="/artists/{{ artist.id }}">
 			<i class="fas fa-users"></i>
 			<div class="item">
 				<h5>{{ artist.name }}</h5>
 			</div>
 		</a>
+		<div >
+			<a href="/artists/{{artist.id}}/edit">
+				<span  style="color: black" onmouseover="this.style.color = 'orange'" onmouseout="this.style.color = 'black'" class="fas fa-edit"></span>
+			</a>
+			<a href="#">
+				<span style="color: black" onmouseover="this.style.color = 'orange'" onmouseout="this.style.color = 'black'" class="fas fa-trash delete"></span>
+			</a>
+		</div>
+		
+			
 	</li>
 	{% endfor %}
 </ul>

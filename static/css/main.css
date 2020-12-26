@@ -100,7 +100,10 @@ ul.items {
   list-style: none;
   padding: 0;
   margin: 0;
+
 }
+
+
 ul.items > li > a {
   margin-bottom: 15px;
   display: flex;
@@ -209,3 +212,9 @@ h2.monospace {
 .subtitle {
   opacity: 0.5;
 }
+
+/* ======================================My Styles ================================ */
+
+/* .edit {
+  color: black;
+} */
