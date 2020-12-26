@@ -3,8 +3,14 @@
 {% block content %}
 <div class="row">
 	<div class="col-sm-6">
+
 		<h1 class="monospace">
-			{{ venue.name }}
+			{{ venue.name }} 
+			<a href="/venues/{{venue.id}}/edit">
+				<span  style="color: black" onmouseover="this.style.color = 'orange'" onmouseout="this.style.color = 'black'" class="fas fa-edit"></span>
+			</a>
+			
+			<button style="background-color: unset; border:unset" id='delete_button' data-id={{venue.id}} class="fas fa-trash"></button>
 		</h1>
 		<p class="subtitle">
 			ID: {{ venue.id }}

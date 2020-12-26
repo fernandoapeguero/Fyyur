@@ -1,8 +1,10 @@
 from datetime import datetime
+from typing import Optional
 from flask_wtf import Form
+from flask_wtf.recaptcha import validators
 from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField
 from wtforms.fields.simple import TextAreaField
-from wtforms.validators import DataRequired, AnyOf, URL, InputRequired
+from wtforms.validators import DataRequired, AnyOf, URL, InputRequired , Optional
 from wtforms.widgets.core import TextArea
 
 class ShowForm(Form):

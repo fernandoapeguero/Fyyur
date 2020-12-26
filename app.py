@@ -9,11 +9,13 @@ import dateutil.parser
 import babel
 from flask import Flask, render_template, request, Response, flash, redirect, url_for
 import flask
+from flask.json import jsonify
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
+from werkzeug.exceptions import abort
 from forms import *
 from flask_migrate import Migrate
 from datetime import date, datetime
@@ -271,19 +273,27 @@ def create_venue_submission():
 def delete_venue(venue_id):
   # TODO: Complete this endpoint for taking a venue_id, and using
   # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
-
+  error = False
   try:
-
-    Venue.query.filter_by(id=venue_id).delete()
+    # Show.query.filter(Show.venue_id == venue_id).delete()
+    venue = Venue.query.get(venue_id)
+    db.session.delete(venue)
     db.session.commit()
+    flash("venue deleted")
+
   except:
     db.session.rollback()
+    flash("could not delete venue")
+    error = True
   finally:
     db.session.close()
 
   # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
   # clicking that button delete it from the db then redirect the user to the homepage
-  return render_template('pages/home.html')
+  if error:
+        abort(400)
+  else:    
+    return redirect(url_for('index'))
 
 #  Artists
 #  ----------------------------------------------------------------
@@ -388,7 +398,13 @@ def edit_artist_submission(artist_id):
   # artist record with ID <artist_id> using the new attributes
   try:
     data = request.form
-    print(data)
+    
+    is_seeking = False
+
+    if(data['seeking_venue'] != 'True'):
+          is_seeking = False
+    else: 
+      is_seeking = True
     artist = Artist.query.filter_by(id=artist_id).first()
     artist.image_link = data['image_link']
     artist.name = data['name']
@@ -397,6 +413,9 @@ def edit_artist_submission(artist_id):
     artist.phone = data['phone']
     artist.genres = data.getlist('genres')
     artist.facebook_link = data['facebook_link']
+    artist.seeking_venue = is_seeking
+    artist.seeking_venue_description = data['venue_description']
+    artist.website = data['website']
 
 
     db.session.commit()
@@ -429,7 +448,14 @@ def edit_venue_submission(venue_id):
   # venue record with ID <venue_id> using the new attributes
   try:
     data = request.form
-    print(data)
+
+    is_seeking = False
+
+    if(data['seeking_talent'] != 'True'):
+        is_seeking = False
+    else: 
+        is_seeking = True
+
     venue = Venue.query.filter_by(id=venue_id).first()
     venue.image_link = data['image_link']
     venue.name = data['name']
@@ -439,7 +465,7 @@ def edit_venue_submission(venue_id):
     venue.phone = data['phone']
     venue.genres = data.getlist('genres')
     venue.facebook_link = data['facebook_link']
-    venue.seeking_talent = bool(data['seeking_talent'])
+    venue.seeking_talent = is_seeking
     venue.seeking_talent_description = data['talent_description']
     venue.website = data['website']
 
@@ -517,7 +543,6 @@ def shows():
   now = datetime.utcnow()
 
   shows = Show.query.join(Venue , Venue.id == Show.venue_id).join(Artist , Artist.id == Show.artist_id).filter(Show.start_time > now).all()
-  # shows = Show.query.join(Venue, Show.venue_id == Venue.id).join(Artist, Artist.id == Show.artist_id).all()
   result = []
   for show in shows:
         

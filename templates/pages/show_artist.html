@@ -3,12 +3,21 @@
 {% block content %}
 <div class="row">
 	<div class="col-sm-6">
+		
 		<h1 class="monospace">
 			{{ artist.name }}
+		
+				<a href="/artists/{{artist.id}}/edit">
+					<span  style="color: black" onmouseover="this.style.color = 'orange'" onmouseout="this.style.color = 'black'" class="fas fa-edit"></span>
+				</a>
 		</h1>
+
+		
 		<p class="subtitle">
 			ID: {{ artist.id }}
+			
 		</p>
+		
 		<div class="genres">
 			{% for genre in artist.genres %}
 			<span class="genre">{{ genre }}</span>
@@ -40,6 +49,7 @@
 		{% endif %}
 	</div>
 	<div class="col-sm-6">
+
 		<img src="{{ artist.image_link }}" alt="Venue Image" />
 	</div>
 </div>
