@@ -15,9 +15,10 @@ from flask_sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
+from sqlalchemy.sql.schema import MetaData
 from werkzeug.exceptions import abort
 from forms import *
-from flask_migrate import Migrate
+from flask_migrate import Migrate, show
 from datetime import date, datetime
 #----------------------------------------------------------------------------#
 # App Config.
@@ -108,7 +109,25 @@ app.jinja_env.filters['datetime'] = format_datetime
 
 @app.route('/')
 def index():
-  return render_template('pages/home.html')
+
+  now = datetime.utcnow
+  shows = Show.query.join(Venue , Venue.id == Show.venue_id).join(Artist , Artist.id == Show.artist_id).order_by(Show.id.desc()).limit(10).all()
+
+  result = []
+  for show in shows:
+        
+    record = {
+      "venue_id": show.venue.id,
+      "venue_name": show.venue.name,
+      "artist_id": show.artist.id,
+      "artist_name": show.artist.name,
+      "artist_image_link": show.artist.image_link,
+      "start_time": str(show.start_time)
+    }
+
+    result.append(record)
+
+  return render_template('pages/home.html' , shows=result , url='/')
 
 
 #  Venues

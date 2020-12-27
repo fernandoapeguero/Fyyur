@@ -131,7 +131,7 @@ class VenueForm(Form):
     )
 
     talent_description = TextAreaField(
-        'talent_description', validators=[DataRequired()]
+        'talent_description'
     )
 
 class ArtistForm(Form):
@@ -244,7 +244,7 @@ class ArtistForm(Form):
     )
 
     venue_description = TextAreaField(
-        'seeking_talent_description', validators=[DataRequired()]
+        'seeking_talent_description'
     )
 
     website = StringField( 'website', validators=[DataRequired(), URL()] )
