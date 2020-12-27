@@ -110,8 +110,8 @@ app.jinja_env.filters['datetime'] = format_datetime
 @app.route('/')
 def index():
 
-  now = datetime.utcnow
-  shows = Show.query.join(Venue , Venue.id == Show.venue_id).join(Artist , Artist.id == Show.artist_id).order_by(Show.id.desc()).limit(10).all()
+  now = datetime.utcnow()
+  shows = Show.query.join(Venue , Venue.id == Show.venue_id).join(Artist , Artist.id == Show.artist_id).filter(Show.start_time > now).order_by(Show.id.desc()).limit(10).all()
 
   result = []
   for show in shows:
