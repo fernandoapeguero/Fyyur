@@ -73,17 +73,6 @@ def venues():
         "venues": Venue.query.filter(Venue.city == area.city ,Venue.state == area.state).all()
       }
       results.append(record)
-
-  # data=[{
-  #   "city": "San Francisco",
-  #   "state": "CA",
-  #   "venues": [{
-  #     "id": 1,
-  #     "name": "The Musical Hop",
-  #     "num_upcoming_shows": 0,
-  #   }]
-    
-  #   }]
   
   return render_template('pages/venues.html', areas=results);
 
