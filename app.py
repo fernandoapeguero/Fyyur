@@ -12,8 +12,9 @@ from werkzeug.exceptions import abort
 from forms import *
 from datetime import date, datetime
 from models import app ,db , Venue , Artist , Show
+
 #----------------------------------------------------------------------------#
-# App Config.
+# Models and app configuration are in the models.py file
 #----------------------------------------------------------------------------#
 
 def format_datetime(value, format='medium'):
