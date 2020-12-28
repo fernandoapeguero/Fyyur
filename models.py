@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_moment import Moment
+from config import SQLALCHEMY_DATABASE_URI 
 
 
 app = Flask(__name__)
@@ -13,7 +14,7 @@ db = SQLAlchemy(app)
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:2225@localhost:5432/fyyur'
+app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 
 migrate = Migrate(app , db)
 #----------------------------------------------------------------------------#
