@@ -55,6 +55,7 @@ npm install bootstrap@3
   ├── README.md
   ├── app.py *** the main driver of the app. Includes your SQLAlchemy models.
                     "python app.py" to run after installing dependences
+  ├── models.py *** it cotains the models use for communicating with the database 
   ├── config.py *** Database URLs, CSRF generation, etc
   ├── error.log
   ├── forms.py *** Your forms
@@ -73,7 +74,7 @@ npm install bootstrap@3
   ```
 
 Overall:
-* Models are located in the `MODELS` section of `app.py`.
+* Models are located in the `MODELS` file on the structure.
 * Controllers are also located in `app.py`.
 * The web frontend is located in `templates/`, which builds static assets deployed to the web server at `static/`.
 * Web forms for creating data are located in `form.py`
